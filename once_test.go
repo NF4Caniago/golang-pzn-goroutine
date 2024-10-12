@@ -1,0 +1,30 @@
+package belajar_golang_goroutine
+
+import (
+	"fmt"
+	"sync"
+	"testing"
+	"time"
+)
+
+var counter = 0
+
+func OnlyOnce() {
+	counter++
+}
+
+func TestOnce(t *testing.T) {
+	once := sync.Once{}
+	group := sync.WaitGroup{}
+
+	for i := 0; i < 100; i++ {
+		go func() {
+			group.Add(1)
+			once.Do(OnlyOnce)
+			group.Done()
+		}()
+	}
+
+	time.Sleep(1 * time.Second)
+	fmt.Println("Counter : ", counter)
+}
